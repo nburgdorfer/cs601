@@ -1,0 +1,29 @@
+1. Let k be the number of clauses in a boolean formula in 2CNF form, where each clause contains exactly two literals. One algorithm to decide if such a formula is satisfiable in polynomial time would be a progressive backtracking algorithm. The basic idea is to make progressive choices of the boolean value of each literal, checking all clauses follow certain conditions that would allow us to decide whether the formula is satidfiable or not. The algorithm proceeds as follows:
+
+-Initially, start with no literal assignments.
+-Assign a value to a literal in the following manner:
+	-First, check if there is a clause where both literals are assigned values and the clause evaluates to False, backtrack to the last assignment choice and flip the assignment. If that choice was already flipped, then declare the formula to be unsatisfiable. [k steps]
+	-Second, if there is a clause where one literal is False and the other is unassigned, assign the unassigned literal True. With that assignment, check for the first and second cases again. [k steps]
+	-Third, check if there are any clauses where one literal is True and the other is unassigned. This is a new choice point. From this point on, any assigned literals are assumed to be correct. Make a choice for this literal and repeat the First and Second checks. [m steps]
+	-If all literals have been assigned, perform a single pass over the clauses to verify the formula is satisfied [k steps]
+	
+	
+	
+	Analyzing the time complexity, for each literal choice we make, we can run steps 1 and 2 [2m*2k] times, where m is the number of literals and k is the number of clauses. Case 3 runs at most m times over all literals, with each literal assignment choice resulting in running steps 1 and 2 again. Therefore the time complexity is roughly (4m^2)k which is O(k) with the constant 4m^2.
+	
+
+
+2. 
+	
+	
+	
+3. We construct an NFA N in polynomial time with states O(cn). We build the NFA to mimic the structure of the formula where each row represents a clause, each state represents a literal in a clause, and each transition represents the literal being assigned to True or False. The structure of the NFA is the following:
+	We start in the state for the first literal of the first clause. If we read in the value of the first literal as False, we move to the next statein the clause. We read in the next symbol for the next literal assignment. If this assignment is False, we transition to the final state for this clause. If the next symbol is False, we transition to the accept state. The accept state represents the formula not being satisfied. If any of the symbols read for this clause are True, we transition to the first state of the next clause. This process continues for all clauses, with thelast clause having no outgoing transitions if an assignment is True. This NFA accepts all non-satisfying assignments of the formula.
+	
+If we were to be able to minimize this NFA in polynomial time, then it must be true that P=NP. We have shown that an NFA can be create in polynomial time that accepts all non-satisfying assignments of some 3CNF formula. If we were to be able to minimize this NFA in polynomial time, we would obtain some minimized NFA M that would contain a single state. Since this is an equivalent NFA, if it accepts all binary strings (i.e. this state is an accept state with both transitions looping back to the same state), then we would reject the formula (stating that the formula is non-satidfyable). Otherwise we would accept. This cannot be the case, since we constructed the NFA in poly time, and reduced it in poly time, this would give a poly time algorithm to 3SAT, which would require P=NP.
+
+
+
+
+
+
