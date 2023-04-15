@@ -1,3 +1,4 @@
+####################################################
 1. Let k be the number of clauses in a boolean formula in 2CNF form, where each clause contains exactly two literals. One algorithm to decide if such a formula is satisfiable in polynomial time would be a progressive backtracking algorithm. The basic idea is to make progressive choices of the boolean value of each literal, checking all clauses follow certain conditions that would allow us to decide whether the formula is satidfiable or not. The algorithm proceeds as follows:
 
 -Initially, start with no literal assignments.
@@ -13,14 +14,28 @@
 	
 
 
-2. 
+
+####################################################
+2. We formulate this knapsack problem as a decision problem, in order to decide whether there exists a subset of items where their weight does not exceed W, but their total value is >= V. To show this problem is NP-complete, we show that the Subst-Sum <=p Knapsack.
+
+We first state that Knapsack is in NP. If we are given a subset, it is trivial to verify that the weights of the subset are <= W and the values of the subset are >= V. This can be done in linear time, therefore, the knapsack problem is in NP.
+
+We now show that Subset-Sum <=p Knapsack. Each element in the given set has a value, v, and a weight, w. The goal is to choose a subset of these items that have a weight <= W and a value >= V. If we modify this problem slightly, and specify that the weights and values of each item are the same (i.e. v_i = w_i), thus requiring that the maximum weight and minimum value are equal (i.e. W=V), then this becomes an instance of the Subset-Sum problem. In this case, if our elements in our subset for subset-sum are [s_i...s_n], our items in the modified knapsack problem are equivalent to this set, where w_i=v_i=s_i. And for the target sum in the subset-sum problem, M, our max weight and min value are equivalent to this sum, where W=V=M. From this formulation, it follows that the sum of the weight of all items i<= W iff the sum of the value of all items >= V iff the sum of the subset of elements in the Subset-Sum problem are equal to M.
+
+With this formulation of the knapsack problem, it is clear to see that the decision problem for Subset-Sum is reduceable in polynomial time to the Knapsack problem. Therefore, the Knapsack problem is NP-complete.
 	
 	
-	
+####################################################
 3. We construct an NFA N in polynomial time with states O(cn). We build the NFA to mimic the structure of the formula where each row represents a clause, each state represents a literal in a clause, and each transition represents the literal being assigned to True or False. The structure of the NFA is the following:
 	We start in the state for the first literal of the first clause. If we read in the value of the first literal as False, we move to the next statein the clause. We read in the next symbol for the next literal assignment. If this assignment is False, we transition to the final state for this clause. If the next symbol is False, we transition to the accept state. The accept state represents the formula not being satisfied. If any of the symbols read for this clause are True, we transition to the first state of the next clause. This process continues for all clauses, with thelast clause having no outgoing transitions if an assignment is True. This NFA accepts all non-satisfying assignments of the formula.
 	
 If we were to be able to minimize this NFA in polynomial time, then it must be true that P=NP. We have shown that an NFA can be create in polynomial time that accepts all non-satisfying assignments of some 3CNF formula. If we were to be able to minimize this NFA in polynomial time, we would obtain some minimized NFA M that would contain a single state. Since this is an equivalent NFA, if it accepts all binary strings (i.e. this state is an accept state with both transitions looping back to the same state), then we would reject the formula (stating that the formula is non-satidfyable). Otherwise we would accept. This cannot be the case, since we constructed the NFA in poly time, and reduced it in poly time, this would give a poly time algorithm to 3SAT, which would require P=NP.
+
+
+
+
+####################################################
+4. We first show that BCB is in NP. If we are given a subset of vertices S from a graph G of size k, we can verify that this subset of vertices forms a BCB in polynomial time. From the properties of BCBs, we start by defining two different bins in which we will "place" vertices. We first iterate through all vertices
 
 
 
