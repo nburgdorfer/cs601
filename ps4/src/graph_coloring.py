@@ -2,6 +2,7 @@ import sys,os
 import numpy as np
 
 import networkx as nx
+import networkx.classes.function as nxf
 import matplotlib.pyplot as plt
 from pyvis.network import Network
 
@@ -29,20 +30,17 @@ def generate_graph(n, graph_type):
 
 def random_graph(n):
     G = nx.Graph()
-    color_list = ["green","orange","blue","red","purple","cyan","black","brown","magenta"]
     adj_list = generate_adj_list(n)
-    node_colors = random_node_colors(adj_list, color_list)
 
     for i in range(n):
-        if (np.any(adj_list[i,:] > 0)):
-            G.add_nodes_from([(str(i), {"color": node_colors[i]})])
-
         for j in range(i+1,n):
             if (adj_list[i,j] > 0):
-                G.add_edge(str(i),str(j))
+                G.add_node(i)
+                G.add_node(j)
+                G.add_edge(i,j)
     return G
 
-def generate_adj_list(n, prob_th=0.90):
+def generate_adj_list(n, prob_th=0.80):
     adj_list = np.zeros((n,n))
 
     for i in range(n):
@@ -52,27 +50,67 @@ def generate_adj_list(n, prob_th=0.90):
                 adj_list[i,j] = 1.0
     return adj_list
 
-def random_node_colors(adj_list, color_list):
-    n = adj_list.shape[0]
-    return np.random.choice(color_list, n, replace=True)
+def random_node_coloring(G, color_list):
+    nodes = G.nodes()
+    for node in nodes:
+        color = np.random.choice(color_list, 1)[0]
+        nx.set_node_attributes(G, {node: color}, name="color")
 
-def n_plus_1_graph_coloring(adj_list, color_list):
-    pass
+def n_plus_1_coloring(G, color_list):
+    print("Coloring graph with {} colors".format(color_list))
+    nodes = G.nodes()
+    
+    # get highest degree node
+    max_d = 0
+    start_node = ""
+    for node,d in G.degree:
+        if d > max_d:
+            max_d = d
+            start_node = node
 
-def get_max_degree(G):
+    node_queue = [start_node]
+
+    while(len(node_queue) > 0):
+        # get next node to color
+        curr_node = node_queue.pop(0)
+        neighbors = nxf.neighbors(G,curr_node)
+        node_colors = nx.get_node_attributes(G, "color")
+
+        # check neighbors for coloring
+        neighbor_colors = set()
+        for n in neighbors:
+            try:
+                neighbor_colors.append(node_colors[n])
+            except:
+                node_queue.append(n)
+
+        # select node coloring from color_list without using any neighbor_colors
+
+
+
+
+        
+        #nx.set_node_attributes(G, {node: color}, name="color")
+
+def get_degree(G):
     degree_sequence = [ d for n, d in G.degree() ]
     degree_sequence = sorted(degree_sequence, reverse=True)
     return min(degree_sequence),max(degree_sequence)
 
 
 # build graph
-n=25
+n=10
+color_list = ["green","orange","blue","red","purple","cyan","black","brown","magenta"]
 graph_type="random"
 G = generate_graph(n, graph_type)
 
 # compute degree
-min_degree, max_degree = get_max_degree(G)
+min_degree, max_degree = get_degree(G)
 print("Minimum degree:", min_degree, "Maximum degree:", max_degree)
+
+# color graph
+#random_node_coloring(G, color_list)
+n_plus_1_coloring(G, set(color_list[:max_degree+1]))
 
 # visualize
 visualize(G)
