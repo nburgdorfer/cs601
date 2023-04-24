@@ -1,0 +1,22 @@
+1. a. For a given undirected graph G = {V,E} with degree k, we show a polynomial time algorithm to color the graph with k+1 colors.
+	-Start with any node in the graph. We choose here to start with the node with the highest degree.
+	-Add this node to a coloring queue (a queue of nodes to be colored)
+	-while the queue is not empty,
+		-grab the node at the front of the queue
+		-grab all connected neighbors of the node
+		-record all neighbor colors
+		-color the current node any color from our k+1 color set that is not a member of the neighbor colors set (which is at most k).
+		-any of the neighbors that do not have a color, add to the queue
+
+   b.
+   
+   
+   
+   
+   
+   
+   
+   
+   
+3. 
+A.	Since x_i = {0,1}, we replace all x_i = 1 and -x_i = 0, since 1%2=1 and 0%2=0. The statement x_i v x_j becomes (x_i + x_j)%2. 
