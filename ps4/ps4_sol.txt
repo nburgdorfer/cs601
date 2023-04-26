@@ -9,14 +9,189 @@
 		-any of the neighbors that do not have a color, add to the queue
 
    b.
+   Verison 1:
+   	To color a 3-colorable graph with 𝑂(√𝑛) colors, we can use the following algorithm:
+
+	-Divide the vertices of the graph into √𝑛 groups, each containing √𝑛 vertices.
+	-For each group, we use a 3-coloring algorithm to color the vertices within the group. This step can be done in constant time, since the group size is √𝑛.
+	-Assign each vertex a color based on the color assigned to its group. Specifically, vertex 𝑣 is assigned color 𝑐𝑣, where 𝑐𝑣 is the color assigned to the group containing 𝑣.
+
+	To prove that this algorithm uses at most 𝑂(√𝑛) colors and gives a legal coloring, we will show the following two facts:
+
+	Statement 1: Each group is 3-colorable.
+	Proof Idea: Let 𝐺 be a group of √𝑛 vertices. Since the original graph is 3-colorable, there exists a valid 3-coloring of 𝐺. Since 𝐺 has √𝑛 vertices, this coloring uses at most 3√𝑛 colors. Thus, we can find a 3-coloring of 𝐺 in 𝑂(√𝑛) time.
+
+	Statement 2: The final coloring uses at most 𝑂(√𝑛) colors and is legal.
+	Proof Idea: Let 𝑐 be the maximum color used in the final coloring. We will show that 𝑐 is 𝑂(√𝑛). Since each vertex is assigned a color based on its group, there are at most √𝑛 vertices with the same color in the same group. Therefore, the number of vertices with color 𝑐 is at most √𝑛×𝑐. Since the original graph is 3-colorable, there are at most 3𝑛 vertices in the graph. Thus, 𝑐√𝑛 ≥ 3𝑛, which implies that 𝑐 is 𝑂(√𝑛). Therefore, the final coloring uses at most 𝑂(√𝑛) colors and is legal.
    
    
    
    
+   Verison 2:
+   	The algorithm is as follows:
+
+	-Split the vertices into groups of size 𝑛^(1/2), rounding up if necessary.
+	-For each group, color the vertices using a brute force algorithm that checks all possible colorings with 3 colors. Since each group has at most 𝑛^(1/2) vertices, there are at most 3^(𝑛^(1/2)) possible colorings for each group. Thus, this step takes at most 𝑂(3^(𝑛^(1/2))) time.
+	-Combine the colorings of the groups to obtain a coloring of the entire graph.
+
+	To prove that this algorithm uses at most 𝑂(√𝑛) colors and gives a legal coloring, we need to show two things:
+	
+	Statement 1. Each group can be colored using at most 3 colors.
+	Statement 2. The combined coloring of the groups is a legal coloring of the entire graph.
+
+	To prove the first statement, note that if a group has more than 3 vertices, then by the pigeonhole principle, there must be at least two vertices that have the same color in any legal 3-coloring of the group. Therefore, any group with more than 3 vertices cannot be 3-colored. Since each group has at most 𝑛^(1/2) vertices, each group can be colored using at most 3 colors.
+
+	To prove the second statement, note that any two groups share at most one vertex, since each group has size at most 𝑛^(1/2) and there are at most 𝑛 vertices in total. Therefore, the colorings of different groups do not conflict with each other. Moreover, since each group is 3-colored, the combined coloring of the groups is also a 3-coloring of the entire graph.
+
+	Therefore, the algorithm uses at most 𝑂(√𝑛) colors and gives a legal coloring.
    
    
+2. a.
+
+
+To show that CLSTR is in NP, we need to demonstrate that we can verify a solution to CLSTR in polynomial time.
+
+The problem CLSTR is defined as follows: given an undirected graph G and an integer k, determine whether there exists a clustering of G into k connected components such that the minimum pairwise distance between any two components is at least d.
+
+To verify a solution, we need to check that the proposed clustering is a valid solution. This involves two steps:
+
+1. Verify that the proposed clustering does indeed partition G into k connected components.
+2. Verify that the minimum pairwise distance between any two components is at least d.
+
+Both of these steps can be done in polynomial time.
+
+Step 1: To verify that the proposed clustering partitions G into k connected components, we can use a standard algorithm for testing whether a graph is connected. This involves starting from any vertex in each connected component and using breadth-first search or depth-first search to visit all the vertices in that component. If we can find k connected components in this way, then the clustering is valid.
+
+Step 2: To verify that the minimum pairwise distance between any two components is at least d, we can compute the pairwise distances between all pairs of vertices in different components using Dijkstra's algorithm or Floyd-Warshall algorithm. If the minimum distance is at least d, then the clustering is valid.
+
+Since both of these steps can be done in polynomial time, we have shown that CLSTR is in NP.
+
+b. 
+   
+   We will show that 3COLORING, the problem of deciding whether a given graph can be colored with three colors, is polynomial-time reducible to CLSTR, the problem of clustering a graph into k connected components with minimum pairwise distance at least d. This will imply that CLSTR is at least as hard as 3COLORING, and hence 3COLORING ≤p CLSTR.
+
+The reduction proceeds as follows:
+
+Given an instance G = (V, E) of 3COLORING, we will construct an instance G' = (V', E') of CLSTR as follows:
+
+- Let k = 3 and d = 2 (these values will be used throughout the reduction).
+- For each vertex v in V, add a new vertex v' to V'.
+- For each edge (u, v) in E, add an edge (u', v') to E'.
+
+Note that the resulting graph G' has 3|V| vertices and |E| edges, and hence can be constructed in polynomial time.
+
+We claim that G can be colored with three colors if and only if G' can be clustered into three connected components with minimum pairwise distance at least 2.
+
+First, suppose that G can be colored with three colors. Let C1, C2, and C3 be the sets of vertices colored with colors 1, 2, and 3, respectively. We will show that G' can be clustered into three connected components with minimum pairwise distance at least 2, as follows:
+
+- The first connected component consists of the vertices in C1 and their corresponding vertices in G'.
+- The second connected component consists of the vertices in C2 and their corresponding vertices in G'.
+- The third connected component consists of the vertices in C3 and their corresponding vertices in G'.
+
+Note that each connected component contains only vertices of one color, and hence each vertex in a connected component has distance 0 from all other vertices in the same component. Moreover, since G is properly colored, there are no edges between vertices of the same color, and hence there are no edges between vertices in different connected components. Therefore, the minimum pairwise distance between any two connected components is at least 2.
+
+Conversely, suppose that G' can be clustered into three connected components with minimum pairwise distance at least 2. Let C1, C2, and C3 be the sets of vertices in G' corresponding to the vertices in the three connected components. We will show that G can be colored with three colors, as follows:
+
+- Color all vertices in C1 with color 1, and all vertices in C2 with color 2.
+- For each vertex v in C3, let N(v) be the set of vertices in C1 and C2 that are adjacent to v in G'. Since the minimum pairwise distance between C1 and C2 is at least 2, we have N(v) ≠ ∅ for all v in C3.
+  - If N(v) contains a vertex colored with color 1, color v with color 2.
+  - Otherwise, if N(v) contains a vertex colored with color 2, color v with color 1.
+  - Otherwise, if N(v) contains only vertices colored with color 3, color v with color 1 or 2 (it doesn't matter which).
+
+Note that this coloring uses only three colors, since any two adjacent vertices in G must belong to different connected components in G'. Moreover, the coloring is proper, since vertices of the same color in G' are not adjacent. Therefore, G can be colored with three colors.
+
+Since the reduction can be done in polynomial time and preserves the answer to the problem, we have shown that 3COLORING ≤p CLSTR.
    
    
-   
-3. 
-A.	Since x_i = {0,1}, we replace all x_i = 1 and -x_i = 0, since 1%2=1 and 0%2=0. The statement x_i v x_j becomes (x_i + x_j)%2. 
+3. a.
+	In arithmetic modulo 2, negation of x can be represented by the expression (1 + x) and x OR y can be represented by the expression (x + y - x*y), where + represents XOR and * represents AND.
+	
+	
+b. 
+	ODD3SAT is a special case of 3SAT in which each clause contains exactly three literals. To convert each clause of 𝜙 into a linear equation modulo 2 for ODD3SAT, we can use the following procedure:
+
+1. For each clause C in 𝜙, create a new equation E by representing the clause as a sum of the literals modulo 2.
+2. Represent each literal as a binary value: 0 for false and 1 for true.
+3. Add the binary values of the literals in C together, taking the sum modulo 2.
+4. The resulting equation E represents the parity (i.e., the number of true literals) of the literals in C. It will be satisfied (i.e., evaluate to 0 modulo 2) if and only if an odd number of literals in C are true, which is equivalent to satisfying the clause C.
+
+For example, consider the ODD3SAT formula 𝜙 = (x₁ ∨ ¬x₂ ∨ x₃) ∧ (x₂ ∨ ¬x₃ ∨ x₄) ∧ (¬x₁ ∨ x₄ ∨ ¬x₅). We can convert the clauses into equations as follows:
+
+- Clause (x₁ ∨ ¬x₂ ∨ x₃) becomes the equation x₁ + x₂ + x₃ ≡ 1 (mod 2).
+- Clause (x₂ ∨ ¬x₃ ∨ x₄) becomes the equation x₂ + x₃ + x₄ ≡ 1 (mod 2).
+- Clause (¬x₁ ∨ x₄ ∨ ¬x₅) becomes the equation x₁ + x₄ + x₅ ≡ 1 (mod 2).
+
+Now, any truth assignment that satisfies the equations will also satisfy the corresponding clauses of the original ODD3SAT formula 𝜙. Conversely, any satisfying truth assignment for 𝜙 will also satisfy the corresponding equations. This allows us to use linear algebra techniques to find a satisfying truth assignment for 𝜙 by solving the system of linear equations modulo 2.
+
+c. 
+	To convert the conjunction of clauses of 𝜙 into a system of linear equations for ODD3SAT, we can simply apply the procedure described in the previous answer to each clause of 𝜙, and combine the resulting equations into a system of linear equations modulo 2. Specifically, we can represent each clause as an equation of the form:
+
+x₁ + x₂ + ... + xₙ ≡ 1 (mod 2)
+
+where x₁, x₂, ..., xₙ are the binary values of the literals in the clause, and n is the number of literals in the clause.
+
+Then, we can combine all the equations into a system of linear equations by writing them as rows of a matrix A, where each row corresponds to a clause of 𝜙. The right-hand side of the equations (which is always 1 modulo 2) can be represented as a column vector b of ones.
+
+Thus, we obtain a system of linear equations of the form:
+
+Ax ≡ b (mod 2)
+
+where x is the vector of binary values of the variables in the formula. Note that the system of equations has n variables, where n is the number of literals in 𝜙.
+
+Now, any truth assignment that satisfies the system of equations will also satisfy the original ODD3SAT formula 𝜙, since each equation corresponds to a clause of 𝜙 and ensures that an odd number of literals are true. Conversely, any satisfying truth assignment for 𝜙 will also satisfy the system of equations.
+
+Therefore, we can use linear algebra techniques to find a satisfying truth assignment for 𝜙 by solving the system of linear equations modulo 2.
+
+
+
+d. To solve the system of linear equations Ax ≡ b (mod 2), where A is an n x n matrix, x and b are n-dimensional column vectors, and all arithmetic is modulo 2, we can use the Gaussian elimination algorithm, which runs in polynomial time. The following is a high-level description of the algorithm:
+
+1. Augment the matrix A with the column vector b to form an n x (n+1) augmented matrix [A|b].
+2. For each column i of A (except the last one), find the first row j such that A[j,i] = 1 (i.e., the first non-zero element in column i from row j down).
+3. Swap rows i and j (if j ≠ i) to ensure that A[i,i] = 1.
+4. For each row j ≠ i, add row i to row j if A[j,i] = 1 (i.e., to eliminate the i-th variable from row j).
+5. Repeat steps 2-4 for each column i of A, in order from left to right.
+6. The resulting matrix [A'|b'] is in row echelon form. Starting from the last row and working upwards, substitute each variable into the equations above it to solve for the remaining variables.
+7. The resulting vector x is a solution to the system of linear equations Ax ≡ b (mod 2).
+
+The Gaussian elimination algorithm runs in O(n^3) time, where n is the dimension of the matrix A. In practice, the algorithm can be optimized by using bit operations to speed up arithmetic modulo 2, and by detecting and handling rows of zeros to avoid unnecessary computations.
+
+
+without using Gaussian Elimination:
+One way to solve the system of linear equations Ax ≡ b (mod 2) without using Gaussian elimination is to use the following iterative algorithm:
+
+1. Start with an initial random solution x₀.
+2. Calculate the residual r₀ = b - Ax₀.
+3. If r₀ = 0 (mod 2), then x₀ is a solution to the system of equations, so return x₀.
+4. Otherwise, choose a random non-zero vector d₁ and set x₁ = x₀ + d₁r₀.
+5. Repeat steps 2-4, replacing x₀ with x₁ and r₀ with the updated residual r₁ = b - Ax₁, until rₖ = 0 (mod 2) for some k.
+
+The correctness of this algorithm follows from the fact that if x is a solution to the system of equations, then Ax ≡ b (mod 2) and hence r = b - Ax is a multiple of 2. Thus, at each iteration of the algorithm, the residual r is reduced by a multiple of 2 until it becomes zero, at which point the algorithm terminates with a solution.
+
+The running time of the algorithm depends on the size of the matrix A and the modulus 2. In the worst case, the algorithm may take exponential time, since there may be exponentially many iterations needed to find a solution. However, on average, the algorithm is expected to converge in polynomial time, and in practice it often performs well for sparse matrices.
+
+Note that there are other algorithms for solving systems of linear equations modulo 2 that may perform better in certain cases, such as the Jacobi method or the conjugate gradient method. However, these methods can also be more complicated to implement and analyze than the simple iterative algorithm described above.	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
