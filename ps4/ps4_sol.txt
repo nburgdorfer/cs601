@@ -1,49 +1,93 @@
-1. a. For a given undirected graph G = {V,E} with degree k, we show a polynomial time algorithm to color the graph with k+1 colors.
-	-Start with any node in the graph. We choose here to start with the node with the highest degree.
-	-Add this node to a coloring queue (a queue of nodes to be colored)
-	-while the queue is not empty,
-		-grab the node at the front of the queue
-		-grab all connected neighbors of the node
-		-record all neighbor colors
-		-color the current node any color from our k+1 color set that is not a member of the neighbor colors set (which is at most k).
-		-any of the neighbors that do not have a color, add to the queue
+################### Question 1 ###################
+1. a. 
+	For a given undirected graph G = {V,E} with degree k, we show a polynomial time algorithm to color the graph with k+1 colors.
+		-Start with any node in the graph. We choose here to start with the node with the highest degree.
+		-Add this node to a coloring queue (a queue of nodes to be colored)
+		-while the queue is not empty,
+			-grab the node at the front of the queue
+			-grab all connected neighbors of the node
+			-record all neighbor colors
+			-color the current node any color from our k+1 color set that is not a member of the neighbor colors set (which is at most k).
+			-any of the neighbors that do not have a color, add to the queue
 
    b.
-   Verison 1:
-   	To color a 3-colorable graph with 𝑂(√𝑛) colors, we can use the following algorithm:
+	We give an efficient algorithm to color a 3-colorable graph with O(sqrt(n)) colors. Observing two cases: (1) a node has degree < sqrt(n); (2) a node has degree >= sqrt(n). We start by addressing the second case. We first select a node that has the highest degree (>= sqrt(n)). If there are no such nodes, simply use the algorithm from part a. Since the graph is 3-colorable, any subgraph must also be 3-colorable. So we know that we can color the
 
-	-Divide the vertices of the graph into √𝑛 groups, each containing √𝑛 vertices.
-	-For each group, we use a 3-coloring algorithm to color the vertices within the group. This step can be done in constant time, since the group size is √𝑛.
-	-Assign each vertex a color based on the color assigned to its group. Specifically, vertex 𝑣 is assigned color 𝑐𝑣, where 𝑐𝑣 is the color assigned to the group containing 𝑣.
 
-	To prove that this algorithm uses at most 𝑂(√𝑛) colors and gives a legal coloring, we will show the following two facts:
 
-	Statement 1: Each group is 3-colorable.
-	Proof Idea: Let 𝐺 be a group of √𝑛 vertices. Since the original graph is 3-colorable, there exists a valid 3-coloring of 𝐺. Since 𝐺 has √𝑛 vertices, this coloring uses at most 3√𝑛 colors. Thus, we can find a 3-coloring of 𝐺 in 𝑂(√𝑛) time.
 
-	Statement 2: The final coloring uses at most 𝑂(√𝑛) colors and is legal.
-	Proof Idea: Let 𝑐 be the maximum color used in the final coloring. We will show that 𝑐 is 𝑂(√𝑛). Since each vertex is assigned a color based on its group, there are at most √𝑛 vertices with the same color in the same group. Therefore, the number of vertices with color 𝑐 is at most √𝑛×𝑐. Since the original graph is 3-colorable, there are at most 3𝑛 vertices in the graph. Thus, 𝑐√𝑛 ≥ 3𝑛, which implies that 𝑐 is 𝑂(√𝑛). Therefore, the final coloring uses at most 𝑂(√𝑛) colors and is legal.
-   
-   
-   
-   
-   Verison 2:
-   	The algorithm is as follows:
 
-	-Split the vertices into groups of size 𝑛^(1/2), rounding up if necessary.
-	-For each group, color the vertices using a brute force algorithm that checks all possible colorings with 3 colors. Since each group has at most 𝑛^(1/2) vertices, there are at most 3^(𝑛^(1/2)) possible colorings for each group. Thus, this step takes at most 𝑂(3^(𝑛^(1/2))) time.
-	-Combine the colorings of the groups to obtain a coloring of the entire graph.
+################### Question 2 ###################	
 
-	To prove that this algorithm uses at most 𝑂(√𝑛) colors and gives a legal coloring, we need to show two things:
+
+
+
+
+################### Question 3 ###################
+NOTE: -x is the representation in plain-text for the negation of literal, x.
+a.
+	We would replace the logical expression [-x_i] with (1 + x_i). If our literals take on the values 0 for a literal being True and 1 for a literal being False, if we have a literal that is True, to represent the negatin of that literal in a modulo 2 system, adding 1 to the literal would result in the negation. To replace the logical expression [x_i v x_j], we can use the formula (x_i + x_j - x_i*x_j). To show that this is an equivalent formulation in a modulo 2 system, we can look at the truth tables for two variables. When x_i = 0 and x_j = 0, expression evaluates to 0. When either x_i = 1 or x_j = 1, this expression evaluates to 1. When both x_i = 1 or x_j = 1, this expression also evaluates to 1. Thus, this is an equivalent representation.
 	
-	Statement 1. Each group can be colored using at most 3 colors.
-	Statement 2. The combined coloring of the groups is a legal coloring of the entire graph.
+b.
+	If we have expressions for [-x_i] and [x_i v x_j], we can replace all clauses using these two expressions. The order of operations would be as follows:
+	1. Replace any negations of any literal, x, with (1+x). Lets call this expression u.
+	2. Next, we can split the 3-term clause into two parts:
+		-we convert the first two terms, [x v y] using the expression from part a, (x + y - x*y). Lets call this expression w.
+		-We are then left with this expression, w, and the third literal. We perform the same substitution, resulting in some expression z for the clause.
+	Example:
+		Clause: (-x_1 v -x_2 v x_4)
+		1. convert negations:
+			((1+x_1) v (1+x_2) v x_4)
+		2. convert first two literals:
+			(((1+x_1)+(1+x_2) - (1+x_1)*(1+x_2)) v x_4)
+		3. convert this expression and the final literal:
+			for simple notation, we can define u = ((1+x_1)+(1+x_2) - (1+x_1)*(1+x_2)) and compute (u v x_4):
+				(u+x_4 - u*x_2)
+			written out fully:
+				((1+x_1)+(1+x_2) - (1+x_1)*(1+x_2))+x_4 - ((1+x_1)+(1+x_2) - (1+x_1)*(1+x_2))*x_4
+	Lets confirm this works with (x_1=1, x_2=1, x_4=1). The original clause will evaluate to True. Our expression will be the following:
+		((1+1)+(1+1) - (1+1)*(1+1))+1 - ((1+1)+(1+1) - (1+1)*(1+1))*1 = (4-4)+1 - (4-4)*1 = 1-0 = 1
+	If we change x_4=0,
+		((1+1)+(1+1) - (1+1)*(1+1))+0 - ((1+1)+(1+1) - (1+1)*(1+1))*0 = (4-4)+0 - (4-4)*0 = 0-0 = 0
 
-	To prove the first statement, note that if a group has more than 3 vertices, then by the pigeonhole principle, there must be at least two vertices that have the same color in any legal 3-coloring of the group. Therefore, any group with more than 3 vertices cannot be 3-colored. Since each group has at most 𝑛^(1/2) vertices, each group can be colored using at most 3 colors.
 
-	To prove the second statement, note that any two groups share at most one vertex, since each group has size at most 𝑛^(1/2) and there are at most 𝑛 vertices in total. Therefore, the colorings of different groups do not conflict with each other. Moreover, since each group is 3-colored, the combined coloring of the groups is also a 3-coloring of the entire graph.
+c.
+	Now that we have a conversion of each clause to an expression, converting the conjunction of these clauses is simple. We simply convert the conjunction of clauses into multiplication. For example, if we have the following formula:
+		c_1 ^ c_2 ^ c_3 ^ c_4
+	The only time this evaluates to True is when all clauses are True. If a single clause is False, the entire formula evaluates to False. If our clauses are now either 0 or 1, we need to uphold the property that when all clauses are 1, our formula evaluates to 1, but when a single clause is 0, the formula should evaluate to 0. To achieve this, we simply replace all the ^ between clauses with *.
+		c_1*c_2*c_3*c_4
+	This is an equivalent formulation.
+	
+d. 
+	To solve this system of equations, we can use the Gaussian elimination algorithm. We have a system Ax=b, where A are our clauses, x is a column vector of our literals, and b is a column vector of the clause evaluations (each of which we want to evaluate to 1). Gaussian elimination runs in polynomial time, and the output x are our literal assignments.
 
-	Therefore, the algorithm uses at most 𝑂(√𝑛) colors and gives a legal coloring.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+	
+	
+	
+	
+	
+	
    
    
 2. a.
@@ -101,97 +145,3 @@ Conversely, suppose that G' can be clustered into three connected components wit
 Note that this coloring uses only three colors, since any two adjacent vertices in G must belong to different connected components in G'. Moreover, the coloring is proper, since vertices of the same color in G' are not adjacent. Therefore, G can be colored with three colors.
 
 Since the reduction can be done in polynomial time and preserves the answer to the problem, we have shown that 3COLORING ≤p CLSTR.
-   
-   
-3. a.
-	In arithmetic modulo 2, negation of x can be represented by the expression (1 + x) and x OR y can be represented by the expression (x + y - x*y), where + represents XOR and * represents AND.
-	
-	
-b. 
-	ODD3SAT is a special case of 3SAT in which each clause contains exactly three literals. To convert each clause of 𝜙 into a linear equation modulo 2 for ODD3SAT, we can use the following procedure:
-
-1. For each clause C in 𝜙, create a new equation E by representing the clause as a sum of the literals modulo 2.
-2. Represent each literal as a binary value: 0 for false and 1 for true.
-3. Add the binary values of the literals in C together, taking the sum modulo 2.
-4. The resulting equation E represents the parity (i.e., the number of true literals) of the literals in C. It will be satisfied (i.e., evaluate to 0 modulo 2) if and only if an odd number of literals in C are true, which is equivalent to satisfying the clause C.
-
-For example, consider the ODD3SAT formula 𝜙 = (x₁ ∨ ¬x₂ ∨ x₃) ∧ (x₂ ∨ ¬x₃ ∨ x₄) ∧ (¬x₁ ∨ x₄ ∨ ¬x₅). We can convert the clauses into equations as follows:
-
-- Clause (x₁ ∨ ¬x₂ ∨ x₃) becomes the equation x₁ + x₂ + x₃ ≡ 1 (mod 2).
-- Clause (x₂ ∨ ¬x₃ ∨ x₄) becomes the equation x₂ + x₃ + x₄ ≡ 1 (mod 2).
-- Clause (¬x₁ ∨ x₄ ∨ ¬x₅) becomes the equation x₁ + x₄ + x₅ ≡ 1 (mod 2).
-
-Now, any truth assignment that satisfies the equations will also satisfy the corresponding clauses of the original ODD3SAT formula 𝜙. Conversely, any satisfying truth assignment for 𝜙 will also satisfy the corresponding equations. This allows us to use linear algebra techniques to find a satisfying truth assignment for 𝜙 by solving the system of linear equations modulo 2.
-
-c. 
-	To convert the conjunction of clauses of 𝜙 into a system of linear equations for ODD3SAT, we can simply apply the procedure described in the previous answer to each clause of 𝜙, and combine the resulting equations into a system of linear equations modulo 2. Specifically, we can represent each clause as an equation of the form:
-
-x₁ + x₂ + ... + xₙ ≡ 1 (mod 2)
-
-where x₁, x₂, ..., xₙ are the binary values of the literals in the clause, and n is the number of literals in the clause.
-
-Then, we can combine all the equations into a system of linear equations by writing them as rows of a matrix A, where each row corresponds to a clause of 𝜙. The right-hand side of the equations (which is always 1 modulo 2) can be represented as a column vector b of ones.
-
-Thus, we obtain a system of linear equations of the form:
-
-Ax ≡ b (mod 2)
-
-where x is the vector of binary values of the variables in the formula. Note that the system of equations has n variables, where n is the number of literals in 𝜙.
-
-Now, any truth assignment that satisfies the system of equations will also satisfy the original ODD3SAT formula 𝜙, since each equation corresponds to a clause of 𝜙 and ensures that an odd number of literals are true. Conversely, any satisfying truth assignment for 𝜙 will also satisfy the system of equations.
-
-Therefore, we can use linear algebra techniques to find a satisfying truth assignment for 𝜙 by solving the system of linear equations modulo 2.
-
-
-
-d. To solve the system of linear equations Ax ≡ b (mod 2), where A is an n x n matrix, x and b are n-dimensional column vectors, and all arithmetic is modulo 2, we can use the Gaussian elimination algorithm, which runs in polynomial time. The following is a high-level description of the algorithm:
-
-1. Augment the matrix A with the column vector b to form an n x (n+1) augmented matrix [A|b].
-2. For each column i of A (except the last one), find the first row j such that A[j,i] = 1 (i.e., the first non-zero element in column i from row j down).
-3. Swap rows i and j (if j ≠ i) to ensure that A[i,i] = 1.
-4. For each row j ≠ i, add row i to row j if A[j,i] = 1 (i.e., to eliminate the i-th variable from row j).
-5. Repeat steps 2-4 for each column i of A, in order from left to right.
-6. The resulting matrix [A'|b'] is in row echelon form. Starting from the last row and working upwards, substitute each variable into the equations above it to solve for the remaining variables.
-7. The resulting vector x is a solution to the system of linear equations Ax ≡ b (mod 2).
-
-The Gaussian elimination algorithm runs in O(n^3) time, where n is the dimension of the matrix A. In practice, the algorithm can be optimized by using bit operations to speed up arithmetic modulo 2, and by detecting and handling rows of zeros to avoid unnecessary computations.
-
-
-without using Gaussian Elimination:
-One way to solve the system of linear equations Ax ≡ b (mod 2) without using Gaussian elimination is to use the following iterative algorithm:
-
-1. Start with an initial random solution x₀.
-2. Calculate the residual r₀ = b - Ax₀.
-3. If r₀ = 0 (mod 2), then x₀ is a solution to the system of equations, so return x₀.
-4. Otherwise, choose a random non-zero vector d₁ and set x₁ = x₀ + d₁r₀.
-5. Repeat steps 2-4, replacing x₀ with x₁ and r₀ with the updated residual r₁ = b - Ax₁, until rₖ = 0 (mod 2) for some k.
-
-The correctness of this algorithm follows from the fact that if x is a solution to the system of equations, then Ax ≡ b (mod 2) and hence r = b - Ax is a multiple of 2. Thus, at each iteration of the algorithm, the residual r is reduced by a multiple of 2 until it becomes zero, at which point the algorithm terminates with a solution.
-
-The running time of the algorithm depends on the size of the matrix A and the modulus 2. In the worst case, the algorithm may take exponential time, since there may be exponentially many iterations needed to find a solution. However, on average, the algorithm is expected to converge in polynomial time, and in practice it often performs well for sparse matrices.
-
-Note that there are other algorithms for solving systems of linear equations modulo 2 that may perform better in certain cases, such as the Jacobi method or the conjugate gradient method. However, these methods can also be more complicated to implement and analyze than the simple iterative algorithm described above.	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
