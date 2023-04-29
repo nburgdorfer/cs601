@@ -18,7 +18,22 @@
 
 
 ################### Question 2 ###################	
-
+a.
+	First, we show that CLSTR is in NP. To prove this, we provide a polynomial time algorithm to verify an instance of CLSTR. We need to verify that the graph is indeed partitioned into k clusters where the distance between each node is bounded by b. If we are given the k clusters, we need to iterate through all node pairs in each cluster and verify that for each pair {i,j}, that D[i,j] <= b. This is polynomial on the order of O(kn^2). Since we can verify this in polynomial time, CLSTR is in NP.
+	
+b.
+	To show that CLSTR is NP-complete, we reduce 3COLORING to CLSTR. To show 3COLORING <=p CLSTR, we start with an instance of 3COLORING.
+	
+	Suppose we have a graph G = {V,E}. We look to construct a symetric distance matrix from this graph and show that this graph G has a 3COLORING iff D allows a (b,k)-clustering, where we choose b=1 and k=3.
+		-For every vertex pair {i,j} in E, we set D[i,j] = 2.
+		-For every vertex pair {i,j} not in E, we set D[i,j] = 1.
+	From this setting, we obtain a symetric distance matrix D with non-negative entries (the entries along the diagonal are 0).
+	
+	For the forward direction, we assume that graph G has a 3COLORING. If G has a 3COLORING, we can separate the nodes in G into 3 clusters, X1, X2, X3, where every node in each cluster has the same color. Since this is a proper 3COLORING of the graph, we know that each node pair in each cluster does not have a connecting edge between them. In this case, it is clear that the distance between any two nodes in each cluster is at most b, where b=1. And since we have k=3 clusters, one for each color, D must also allow a (b,k)-clustering.
+	
+	For the backwards direction, we assume that D allows a (b,k)-clustering, where b=1 and k=3. Since we know that each node pair within each cluster is not connected by an edge, we can simply color every node in each of the 3 clusters with a different color. Thus providing a 3COLORING of the graph G.
+	
+	Since we constructed our distance matrix D in polynomial time, 3COLORING <=p CLSTR, therefore CLSTR in NP-complete.
 
 
 
@@ -60,88 +75,3 @@ c.
 	
 d. 
 	To solve this system of equations, we can use the Gaussian elimination algorithm. We have a system Ax=b, where A are our clauses, x is a column vector of our literals, and b is a column vector of the clause evaluations (each of which we want to evaluate to 1). Gaussian elimination runs in polynomial time, and the output x are our literal assignments.
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-	
-	
-	
-	
-	
-	
-   
-   
-2. a.
-
-
-To show that CLSTR is in NP, we need to demonstrate that we can verify a solution to CLSTR in polynomial time.
-
-The problem CLSTR is defined as follows: given an undirected graph G and an integer k, determine whether there exists a clustering of G into k connected components such that the minimum pairwise distance between any two components is at least d.
-
-To verify a solution, we need to check that the proposed clustering is a valid solution. This involves two steps:
-
-1. Verify that the proposed clustering does indeed partition G into k connected components.
-2. Verify that the minimum pairwise distance between any two components is at least d.
-
-Both of these steps can be done in polynomial time.
-
-Step 1: To verify that the proposed clustering partitions G into k connected components, we can use a standard algorithm for testing whether a graph is connected. This involves starting from any vertex in each connected component and using breadth-first search or depth-first search to visit all the vertices in that component. If we can find k connected components in this way, then the clustering is valid.
-
-Step 2: To verify that the minimum pairwise distance between any two components is at least d, we can compute the pairwise distances between all pairs of vertices in different components using Dijkstra's algorithm or Floyd-Warshall algorithm. If the minimum distance is at least d, then the clustering is valid.
-
-Since both of these steps can be done in polynomial time, we have shown that CLSTR is in NP.
-
-b. 
-   
-   We will show that 3COLORING, the problem of deciding whether a given graph can be colored with three colors, is polynomial-time reducible to CLSTR, the problem of clustering a graph into k connected components with minimum pairwise distance at least d. This will imply that CLSTR is at least as hard as 3COLORING, and hence 3COLORING ≤p CLSTR.
-
-The reduction proceeds as follows:
-
-Given an instance G = (V, E) of 3COLORING, we will construct an instance G' = (V', E') of CLSTR as follows:
-
-- Let k = 3 and d = 2 (these values will be used throughout the reduction).
-- For each vertex v in V, add a new vertex v' to V'.
-- For each edge (u, v) in E, add an edge (u', v') to E'.
-
-Note that the resulting graph G' has 3|V| vertices and |E| edges, and hence can be constructed in polynomial time.
-
-We claim that G can be colored with three colors if and only if G' can be clustered into three connected components with minimum pairwise distance at least 2.
-
-First, suppose that G can be colored with three colors. Let C1, C2, and C3 be the sets of vertices colored with colors 1, 2, and 3, respectively. We will show that G' can be clustered into three connected components with minimum pairwise distance at least 2, as follows:
-
-- The first connected component consists of the vertices in C1 and their corresponding vertices in G'.
-- The second connected component consists of the vertices in C2 and their corresponding vertices in G'.
-- The third connected component consists of the vertices in C3 and their corresponding vertices in G'.
-
-Note that each connected component contains only vertices of one color, and hence each vertex in a connected component has distance 0 from all other vertices in the same component. Moreover, since G is properly colored, there are no edges between vertices of the same color, and hence there are no edges between vertices in different connected components. Therefore, the minimum pairwise distance between any two connected components is at least 2.
-
-Conversely, suppose that G' can be clustered into three connected components with minimum pairwise distance at least 2. Let C1, C2, and C3 be the sets of vertices in G' corresponding to the vertices in the three connected components. We will show that G can be colored with three colors, as follows:
-
-- Color all vertices in C1 with color 1, and all vertices in C2 with color 2.
-- For each vertex v in C3, let N(v) be the set of vertices in C1 and C2 that are adjacent to v in G'. Since the minimum pairwise distance between C1 and C2 is at least 2, we have N(v) ≠ ∅ for all v in C3.
-  - If N(v) contains a vertex colored with color 1, color v with color 2.
-  - Otherwise, if N(v) contains a vertex colored with color 2, color v with color 1.
-  - Otherwise, if N(v) contains only vertices colored with color 3, color v with color 1 or 2 (it doesn't matter which).
-
-Note that this coloring uses only three colors, since any two adjacent vertices in G must belong to different connected components in G'. Moreover, the coloring is proper, since vertices of the same color in G' are not adjacent. Therefore, G can be colored with three colors.
-
-Since the reduction can be done in polynomial time and preserves the answer to the problem, we have shown that 3COLORING ≤p CLSTR.
