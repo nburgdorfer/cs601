@@ -1,19 +1,5 @@
 4. 
 
-To prove that the language 𝐿 that accepts all strings of even length is not TM-recognizable or TM-corecognizable, we can use a diagonalization argument. 
+    An example of a language L such that neither L nor the compliment of L (which we denote as -L) is TM-recognizable would be the language L that accepts all string of even length: L = { w : |w| is even}.
 
-Assume for contradiction that 𝐿 is TM-recognizable. Then there exists a Turing machine 𝑀 that recognizes 𝐿, i.e., 𝑀 halts and accepts any input string of even length, and either halts and rejects or loops forever on any input string of odd length.
-
-Let's construct a new Turing machine 𝑁 that enumerates all possible strings in lexicographic order and simulates 𝑀 on each string in turn. If 𝑀 accepts a string, 𝑁 outputs the string, and if 𝑀 rejects or loops forever on a string, 𝑁 moves on to the next string.
-
-We can now construct a new string 𝑠 as follows: if the 𝑖-th symbol of the 𝑖-th string in lexicographic order is "0", then the 𝑖-th symbol of 𝑠 is "1", and if the 𝑖-th symbol of the 𝑖-th string in lexicographic order is "1", then the 𝑖-th symbol of 𝑠 is "0". Since 𝑠 has odd length, 𝑀 either rejects or loops forever on 𝑠.
-
-Now consider the set of all possible strings, both even and odd length. Since 𝑀 is a recognizer for 𝐿, it recognizes all even length strings. By construction, 𝑁 will eventually output every even length string. However, since 𝑠 is odd length, 𝑀 will reject or loop forever on 𝑠, and 𝑁 will never output 𝑠. Therefore, 𝐿 cannot be recognized by any Turing machine, and is not TM-recognizable.
-
-Similarly, assume for contradiction that 𝐿 is TM-corecognizable. Then there exists a Turing machine 𝑀' that corecognizes 𝐿, i.e., 𝑀' halts and rejects any input string of even length, and either halts and accepts or loops forever on any input string of odd length.
-
-Let's construct a new Turing machine 𝑁' that enumerates all possible strings in lexicographic order and simulates 𝑀' on each string in turn. If 𝑀' rejects a string, 𝑁' outputs the string, and if 𝑀' accepts or loops forever on a string, 𝑁' moves on to the next string.
-
-We can now construct a new string 𝑠' as follows: if the 𝑖-th symbol of the 𝑖-th string in lexicographic order is "0", then the 𝑖-th symbol of 𝑠' is "0", and if the 𝑖-th symbol of the 𝑖-th string in lexicographic order is "1", then the 𝑖-th symbol of 𝑠' is "1". Since 𝑠' has odd length, 𝑀' either accepts or loops forever on 𝑠'.
-
-Now consider the set of all possible strings, both even and odd length. Since 𝑀' is a corecognizer for 𝐿, it corecognizes all even length strings. By construction, 𝑁' will eventually output every even length string that 𝑀' rejects. However, since 𝑠' is odd length, 𝑀' will accept or loop forever on 𝑠', and 𝑁' will never output 𝑠'. Therefore, 𝐿 cannot be corecognized by any Turing machine, and is not TM
+    To prove that L is not TM-recognizable, we will use the diagonalization arguement. We first assume that L is TM-recognizable. If it is TM-recognizable, then there must exist a TM, M, that recognizes it. On input w, M either accepts input w if w is of even length, rejects input w if w is not of even length, or loops on forever if input w is not of even length. If L is TM-recognizable, then there must exist an Enumerator for the language. We label this Enumerator E. E prints out every and all accepting (even length) strings for the language L.
